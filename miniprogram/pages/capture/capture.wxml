@@ -1,0 +1,26 @@
+<!-- 拍摄页 — 相机拍照 + 猫脸识别 -->
+<view class="capture-page">
+  <!-- 相机预览 -->
+  <camera device-position="back" flash="auto" class="camera-preview">
+    <!-- AR 瞄准叠加层 -->
+    <cover-view class="ar-overlay">
+      <cover-view class="ar-frame"></cover-view>
+      <cover-view class="ar-text">将猫咪放入框内</cover-view>
+    </cover-view>
+  </camera>
+
+  <!-- 底部控制 -->
+  <view class="controls">
+    <button class="capture-btn" bindtap="takePhoto" disabled="{{capturing}}">
+      <view class="capture-btn-inner"></view>
+    </button>
+  </view>
+
+  <!-- 处理中 -->
+  <view class="processing-overlay" wx:if="{{processing}}">
+    <view class="processing-content">
+      <text class="processing-step">{{stepText}}</text>
+      <progress percent="{{progress}}" stroke-width="4" activeColor="#E94560" backgroundColor="rgba(255,255,255,0.1)"/>
+    </view>
+  </view>
+</view>

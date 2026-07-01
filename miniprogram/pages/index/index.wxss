@@ -1,0 +1,5 @@
+.splash { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; padding:40rpx; }
+.splash-emoji { font-size:160rpx; }
+.splash-title { font-size:60rpx; font-weight:bold; color:#E94560; margin-top:30rpx; }
+.splash-sub { font-size:28rpx; color:rgba(255,255,255,0.4); margin-top:20rpx; }
+.start-btn { margin-top:80rpx; width:400rpx; }

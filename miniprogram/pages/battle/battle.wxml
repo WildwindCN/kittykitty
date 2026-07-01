@@ -1,0 +1,39 @@
+<!-- 对战页 -->
+<view class="container">
+  <view class="battle-area" wx:if="{{!finished}}">
+    <view class="vs-display">
+      <view class="fighter {{activeActor === myCat._id ? 'active' : ''}}">
+        <text class="fighter-name">{{myCat.name}}</text>
+        <view class="hp-bar"><view class="hp-inner" style="width:{{myHpPct}}%; background:{{myHpColor}}"></view></view>
+        <text class="hp-text">{{myHp}} / {{myCat.baseHp}}</text>
+        <text class="cp-text">CP {{myCat.cp}}</text>
+      </view>
+      <text class="vs-text">VS</text>
+      <view class="fighter {{activeActor === opponent._id ? 'active' : ''}}">
+        <text class="fighter-name">{{opponent.name}}</text>
+        <view class="hp-bar"><view class="hp-inner" style="width:{{oppHpPct}}%; background:{{oppHpColor}}"></view></view>
+        <text class="hp-text">{{oppHp}} / {{opponent.baseHp}}</text>
+        <text class="cp-text">CP {{opponent.cp}}</text>
+      </view>
+    </view>
+
+    <view class="battle-log">
+      <view class="log-item" wx:for="{{log}}" wx:key="idx">
+        <text class="log-round">R{{item.round}}</text>
+        <text class="log-text" style="color:{{item.color}}">{{item.text}}</text>
+      </view>
+    </view>
+
+    <view class="battle-progress">
+      <text>回合 {{currentRound}} / {{maxRounds}}</text>
+      <progress percent="{{progress}}" stroke-width="4" activeColor="#E94560"/>
+    </view>
+  </view>
+
+  <view class="result-area" wx:else>
+    <text class="result-icon">{{won ? '🏆' : '😿'}}</text>
+    <text class="result-text" style="color:{{won ? '#FFD700' : '#888'}}">{{won ? '胜利！' : '败北...'}}</text>
+    <text class="result-detail">{{rounds}} 回合 / {{winner}} 获胜</text>
+    <button class="btn-primary" bindtap="goBack">返回图鉴</button>
+  </view>
+</view>

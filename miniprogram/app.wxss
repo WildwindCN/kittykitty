@@ -1,0 +1,69 @@
+/* KittyKitty 全局样式 */
+page {
+  background-color: #0F0F23;
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+}
+
+.container { padding: 20rpx; }
+
+/* 稀有度颜色 */
+.rarity-common { color: #9E9E9E; }
+.rarity-rare { color: #4FC3F7; }
+.rarity-epic { color: #CE93D8; }
+.rarity-legendary { color: #FFD700; }
+
+.bg-rarity-common { background-color: rgba(158,158,158,0.2); }
+.bg-rarity-rare { background-color: rgba(79,195,247,0.2); }
+.bg-rarity-epic { background-color: rgba(206,147,216,0.2); }
+.bg-rarity-legendary { background-color: rgba(255,215,0,0.2); }
+
+/* 通用卡片 */
+.card {
+  background: rgba(255,255,255,0.04);
+  border-radius: 24rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+}
+
+/* 按钮 */
+.btn-primary {
+  background: linear-gradient(135deg, #E94560, #FF6B6B);
+  color: #fff;
+  border-radius: 16rpx;
+  border: none;
+  font-size: 32rpx;
+  padding: 24rpx;
+}
+.btn-primary[disabled] { opacity: 0.4; }
+
+.btn-ghost {
+  background: transparent;
+  color: #fff;
+  border: 2rpx solid rgba(255,255,255,0.2);
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  padding: 20rpx;
+}
+
+/* 输入框 */
+.input-field {
+  background: rgba(255,255,255,0.08);
+  border-radius: 16rpx;
+  padding: 24rpx;
+  color: #fff;
+  font-size: 30rpx;
+  border: none;
+}
+
+/* 属性条 */
+.stat-bar {
+  height: 12rpx;
+  border-radius: 6rpx;
+  background: rgba(255,255,255,0.1);
+  overflow: hidden;
+}
+.stat-bar-inner {
+  height: 100%;
+  border-radius: 6rpx;
+}

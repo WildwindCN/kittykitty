@@ -1,0 +1,32 @@
+<!-- 个人中心 -->
+<view class="container">
+  <view class="profile-header">
+    <image class="avatar" src="{{user.avatarUrl}}" mode="aspectFill" wx:if="{{user.avatarUrl}}"/>
+    <view class="avatar placeholder" wx:else>🐱</view>
+    <text class="nickname">{{user.nickname || '猫友'}}</text>
+    <text class="phone">{{user.phone || ''}}</text>
+  </view>
+
+  <view class="stats-row">
+    <view class="stat-item">
+      <text class="stat-value">{{cats.length}}</text>
+      <text class="stat-label">猫咪收集</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-value">{{totalBattles}}</text>
+      <text class="stat-label">对战次数</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-value">{{totalWins}}</text>
+      <text class="stat-label">胜场</text>
+    </view>
+  </view>
+
+  <view class="menu-list">
+    <view class="menu-item" wx:if="{{cats.length > 0}}">
+      <text>最强猫咪</text>
+      <text class="rarity-{{cats[0].rarity}}">CP {{cats[0].cp}} · {{cats[0].name}}</text>
+    </view>
+    <button class="menu-item logout-btn" bindtap="logout">退出登录</button>
+  </view>
+</view>

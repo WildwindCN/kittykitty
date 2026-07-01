@@ -1,0 +1,13 @@
+.capture-page { position:relative; width:100vw; height:100vh; background:#000; }
+.camera-preview { width:100%; height:100%; }
+.ar-overlay { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.ar-frame { width:500rpx; height:500rpx; border:4rpx solid rgba(233,69,96,0.6); border-radius:32rpx; }
+.ar-text { color:rgba(255,255,255,0.7); font-size:28rpx; margin-top:40rpx; }
+
+.controls { position:absolute; bottom:80rpx; left:0; right:0; display:flex; justify-content:center; }
+.capture-btn { width:140rpx; height:140rpx; border-radius:50%; border:6rpx solid #E94560; background:transparent; padding:0; display:flex; align-items:center; justify-content:center; }
+.capture-btn-inner { width:110rpx; height:110rpx; border-radius:50%; background:rgba(233,69,96,0.8); }
+
+.processing-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center; }
+.processing-content { width:500rpx; text-align:center; }
+.processing-step { font-size:30rpx; color:#fff; margin-bottom:30rpx; display:block; }

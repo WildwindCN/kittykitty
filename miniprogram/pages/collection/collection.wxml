@@ -1,0 +1,26 @@
+<!-- 图鉴页 -->
+<view class="container">
+  <view class="header">
+    <text class="title">猫咪图鉴 ({{cats.length}})</text>
+  </view>
+
+  <view class="empty-box" wx:if="{{cats.length === 0 && !loading}}">
+    <text class="empty-icon">📖</text>
+    <text class="empty-text">还没有收集到猫咪</text>
+    <text class="empty-sub">出门拍摄你的第一只猫咪吧！</text>
+  </view>
+
+  <view class="loading-box" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+
+  <view class="grid" wx:else>
+    <view class="cat-card {{'bg-rarity-' + item.rarity}}" wx:for="{{cats}}" wx:key="_id" bindtap="goDetail" data-id="{{item._id}}">
+      <image class="cat-img" src="{{item.imageUrl}}" mode="aspectFill" wx:if="{{item.imageUrl}}"/>
+      <view class="cat-img placeholder" wx:else>🐱</view>
+      <text class="cat-name">{{item.name}}</text>
+      <text class="cat-cp rarity-{{item.rarity}}">CP {{item.cp}}</text>
+      <text class="cat-info-text">Lv.{{item.level}} · {{rarityLabel(item.rarity)}}</text>
+    </view>
+  </view>
+</view>

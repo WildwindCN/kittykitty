@@ -1,0 +1,7 @@
+<!-- 首页/启动页 -->
+<view class="splash">
+  <text class="splash-emoji">🐱</text>
+  <text class="splash-title">KittyKitty</text>
+  <text class="splash-sub">发现身边的猫咪，开始收集之旅</text>
+  <button class="btn-primary start-btn" bindtap="start">开始探索</button>
+</view>

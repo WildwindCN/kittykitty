@@ -1,0 +1,50 @@
+<!-- 猫咪卡片详情页 -->
+<view class="container">
+  <view class="card-frame {{'border-' + cat.rarity}}" wx:if="{{cat}}">
+    <!-- 名字栏 -->
+    <view class="name-bar {{'bg-' + cat.rarity}}">
+      <text class="card-name">{{cat.name}}</text>
+      <text class="rarity-badge {{'rarity-' + cat.rarity}}">{{rarityLabel(cat.rarity)}}</text>
+    </view>
+
+    <!-- 图片 -->
+    <image class="card-image" src="{{cat.imageUrl || cat.cardImageUrl}}" mode="aspectFill" wx:if="{{imageSrc}}"/>
+    <view class="card-image placeholder" wx:else>🐱</view>
+
+    <!-- CP -->
+    <view class="cp-section">
+      <text class="cp-label">CP</text>
+      <text class="cp-value {{'rarity-' + cat.rarity}}">{{cp}}</text>
+    </view>
+
+    <!-- 属性 -->
+    <view class="stats">
+      <view class="stat-row" wx:for="{{stats}}" wx:key="label">
+        <text class="stat-label">{{item.label}}</text>
+        <view class="stat-bar">
+          <view class="stat-bar-inner" style="width:{{item.pct}}%; background-color:{{item.color}}"></view>
+        </view>
+        <text class="stat-num">{{item.value}}{{item.suffix}}</text>
+      </view>
+    </view>
+
+    <!-- 技能 -->
+    <view class="skills" wx:if="{{cat.battleSkills && cat.battleSkills.length > 0}}">
+      <text class="section-title">战斗技能</text>
+      <view class="skill-item" wx:for="{{cat.battleSkills}}" wx:key="id">
+        <text class="skill-name">{{item.name}}</text>
+        <text class="skill-power">威力 {{item.power}}</text>
+      </view>
+    </view>
+
+    <view class="life-skills" wx:if="{{cat.lifeSkills && cat.lifeSkills.length > 0}}">
+      <text class="section-title">生活技能</text>
+      <text class="skill-name" wx:for="{{cat.lifeSkills}}" wx:key="id">{{item.name}}</text>
+    </view>
+
+    <!-- 操作 -->
+    <view class="actions">
+      <button class="btn-primary" bindtap="startBattle">⚔ 对战</button>
+    </view>
+  </view>
+</view>

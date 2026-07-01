@@ -1,0 +1,13 @@
+.grid { display:grid; grid-template-columns:1fr 1fr; gap:20rpx; }
+.cat-card { border-radius:24rpx; padding:20rpx; text-align:center; }
+.cat-img { width:100%; height:260rpx; border-radius:16rpx; }
+.cat-img.placeholder { display:flex; align-items:center; justify-content:center; font-size:80rpx; background:rgba(255,255,255,0.05); }
+.cat-name { font-size:28rpx; font-weight:bold; display:block; margin-top:12rpx; }
+.cat-cp { font-size:32rpx; font-weight:bold; margin-top:4rpx; }
+.cat-info-text { font-size:22rpx; color:rgba(255,255,255,0.3); }
+
+.empty-box { text-align:center; padding:200rpx 0; }
+.empty-icon { font-size:100rpx; }
+.empty-text { font-size:30rpx; color:rgba(255,255,255,0.4); margin-top:20rpx; }
+.empty-sub { font-size:24rpx; color:rgba(255,255,255,0.2); margin-top:10rpx; }
+.loading-box { text-align:center; padding:200rpx 0; color:rgba(255,255,255,0.4); }
