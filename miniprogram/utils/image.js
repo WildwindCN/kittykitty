@@ -6,18 +6,17 @@ const cache = {}; // { [fileID]: { url, ts } }
 module.exports = {
   async getTempUrls(fileIDs) {
     if (!Array.isArray(fileIDs)) fileIDs = [fileIDs];
-    const ids = fileIDs.filter(id => id && typeof id === 'string');
+    const ids = [...new Set(fileIDs.filter(id => id && typeof id === 'string'))]; // 去重
     const now = Date.now();
     const results = {};
 
-    // 缓存命中
     const needConvert = [];
     for (const id of ids) {
       const entry = cache[id];
       if (entry && now - entry.ts < CACHE_TTL) {
         results[id] = entry.url;
       } else if (!id.startsWith('cloud://')) {
-        results[id] = id; // HTTP URL 直接使用
+        results[id] = id;
       } else {
         needConvert.push(id);
       }

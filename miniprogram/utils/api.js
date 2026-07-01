@@ -39,10 +39,11 @@ async function tryRefreshToken() {
   return false;
 }
 
-function request(fnPath, data = {}, retry = true) {
+function request(fnPath, originData = {}, retry = true) {
   return new Promise((resolve, reject) => {
     const execute = () => {
       const token = app.globalData.token;
+      const data = { ...originData };
       if (token) data.token = token;
 
       wx.request({
@@ -113,11 +114,7 @@ function redirectToLogin() {
   app.globalData.token = null;
   app.globalData.userInfo = null;
 
-  const pages = getCurrentPages();
-  const currentPage = pages[pages.length - 1];
-  if (currentPage && currentPage.route !== 'pages/login/login') {
-    wx.navigateTo({ url: '/pages/login/login' });
-  }
+  wx.reLaunch({ url: '/pages/login/login' });
 }
 
 module.exports = {

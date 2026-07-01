@@ -5,12 +5,12 @@ Page({
   data: { cat: null, imageSrc: '', cp: 0, stats: [] },
 
   onLoad(options) {
+    this._shareParams = options;
     if (options.id) this.loadCat(options.id);
   },
 
   async loadCat(id) {
     try {
-      // 优先精确查询（自己的猫）
       let cat = null;
       try {
         const detailRes = await api.getCatDetail(id);
@@ -19,12 +19,31 @@ Page({
         }
       } catch (_) {}
 
-      // 回退：从图鉴列表中查找（可能是其他人拍的猫，从 explore 进入）
+      // 回退1：从自己的图鉴列表中查找
       if (!cat) {
         const res = await api.getMyCats();
         if (res.code === 200 && res.data) {
           cat = (res.data || []).find(c => c._id === id || c.id === id);
         }
+      }
+
+      // 回退2：从 explore 页暂存的数据（别人的猫）
+      if (!cat) {
+        const cached = getApp().globalData._viewingCat;
+        if (cached && ((cached._id || cached.id) === id)) {
+          cat = cached;
+        }
+        getApp().globalData._viewingCat = null;
+      }
+
+      // 回退3：从分享链接参数构建基础卡片
+      if (!cat && this._shareParams && this._shareParams.name) {
+        cat = {
+          _id: id, id: id,
+          name: decodeURIComponent(this._shareParams.name),
+          rarity: this._shareParams.rarity || 'common',
+          cp: parseInt(this._shareParams.cp) || 0,
+        };
       }
 
       if (cat) {
@@ -84,7 +103,7 @@ Page({
     if (!cat) return { title: 'KittyKitty', path: '/pages/index/index' };
     return {
       title: `我抓到了 ${cat.name}！`,
-      path: `/pages/card/card?id=${cat._id || cat.id}`,
+      path: `/pages/card/card?id=${cat._id || cat.id}&name=${encodeURIComponent(cat.name || '')}&rarity=${cat.rarity || 'common'}&cp=${cat.cp || 0}`,
     };
   },
 });

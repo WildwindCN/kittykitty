@@ -9,14 +9,16 @@ module.exports = {
   },
 
   async wechatLogin() {
-    // 获取微信登录 code
-    const { code } = await new Promise((resolve, reject) => {
-      wx.login({ success: resolve, fail: reject });
-    });
-    if (!code) return { ok: false, error: '微信登录失败' };
-
-    const res = await api.wechatLogin(code);
-    return handleAuthResponse(res);
+    try {
+      const res = await new Promise((resolve, reject) => {
+        wx.login({ success: resolve, fail: reject });
+      });
+      if (!res || !res.code) return { ok: false, error: '微信登录失败，请重试' };
+      const apiRes = await api.wechatLogin(res.code);
+      return handleAuthResponse(apiRes);
+    } catch (_) {
+      return { ok: false, error: '微信登录失败，请检查网络' };
+    }
   },
 
   async sendSms(phone) {

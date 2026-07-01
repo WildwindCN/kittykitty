@@ -63,29 +63,28 @@ Page({
 
       this.setData({ progress: 50, stepText: '正在识别猫咪特征...' });
 
+      // 用临时 HTTPS URL 做特征提取（recognition 需要 HTTPS）
       let featureVector = null;
-      if (imageUrl) {
-        try {
-          const matchRes = await api.matchCatFace(imageUrl, lat, lng);
-          if (matchRes.code === 200 && matchRes.data) {
-            featureVector = matchRes.data.featureVector;
-          }
-        } catch (_) {}
-      }
+      try {
+        const matchRes = await api.matchCatFace(imageUrl, lat, lng);
+        if (matchRes.code === 200 && matchRes.data) {
+          featureVector = matchRes.data.featureVector;
+        }
+      } catch (_) {}
       if (this._aborted) return;
 
       this.setData({ progress: 70, stepText: '正在生成猫咪属性...' });
 
       const cat = generator.generateCat({
         id: `cat_${Date.now()}`,
-        imageUrl: imageUrl,
+        imageUrl: uploadRes.fileID,  // 永久 cloud:// fileID，非临时 URL
         captureLocation: { latitude: lat, longitude: lng },
       });
 
       const catData = {
         name: cat.name, rarity: cat.rarity, type: cat.type,
         baseHp: cat.baseHp, baseAtk: cat.baseAtk, baseDef: cat.baseDef, baseSpd: cat.baseSpd, baseCrit: cat.baseCrit,
-        cp: cat.cp, imageUrl: imageUrl,
+        cp: cat.cp, imageUrl: uploadRes.fileID,  // 存永久 fileID
         battleSkills: cat.battleSkills, lifeSkills: cat.lifeSkills,
         captureLocation: { latitude: lat, longitude: lng },
         level: 1, exp: 0,

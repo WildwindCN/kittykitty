@@ -73,51 +73,139 @@ Page({
     const myMaxHp = myHp;
     const oppMaxHp = oppHp;
 
-    // SPD 决定先手
+    // 属性修正追踪 { atkMul, defMul, spdMul, turns }
+    let myMods = { atkMul: 1.0, defMul: 1.0, spdMul: 1.0, turns: 0 };
+    let oppMods = { atkMul: 1.0, defMul: 1.0, spdMul: 1.0, turns: 0 };
+    let mySkipNext = false;
+    let oppSkipNext = false;
+    let myNineLives = false;
+    let oppNineLives = false;
+
+    function getMods(who) { return who === 'me' ? myMods : oppMods; }
+    function setMods(who, m) { if (who === 'me') myMods = m; else oppMods = m; }
+    function skipNext(who) { return who === 'me' ? mySkipNext : oppSkipNext; }
+    function setSkip(who, v) { if (who === 'me') mySkipNext = v; else oppSkipNext = v; }
+    function hasNineLives(who) { return who === 'me' ? myNineLives : oppNineLives; }
+    function useNineLives(who) { if (who === 'me') { myNineLives = false; myHp = 1; } else { oppNineLives = false; oppHp = 1; } }
+
     const mySpd = myCat.baseSpd || 50;
     const oppSpd = opponent.baseSpd || 50;
     const iGoFirst = mySpd >= oppSpd;
 
     for (let r = 1; r <= maxRounds; r++) {
+      // 衰减修正回合
+      if (myMods.turns > 0) { myMods.turns--; if (myMods.turns === 0) myMods = { atkMul: 1.0, defMul: 1.0, spdMul: 1.0, turns: 0 }; }
+      if (oppMods.turns > 0) { oppMods.turns--; if (oppMods.turns === 0) oppMods = { atkMul: 1.0, defMul: 1.0, spdMul: 1.0, turns: 0 }; }
+
       const attackers = iGoFirst ? ['me', 'opp'] : ['opp', 'me'];
 
       for (const who of attackers) {
         if (myHp <= 0 || oppHp <= 0) break;
 
-        const attacker = who === 'me' ? myCat : opponent;
-        const atk = attacker.baseAtk || 50;
-        const defenderDef = who === 'me' ? (opponent.baseDef || 40) : (myCat.baseDef || 40);
-        const attackerName = attacker.name;
-        const defenderName = who === 'me' ? opponent.name : myCat.name;
-
-        // 选择技能
-        const skill = pickSkill(attacker);
-        const skillPower = skill ? skill.power : 50;
-        const skillName = skill ? skill.name : '普通攻击';
-        let skillAcc = skill ? skill.accuracy : 1.0;
-
-        // 命中判定
-        if (Math.random() > skillAcc) {
-          events.push({
-            round: r, text: `${attackerName} 的 ${skillName} 未命中！`, color: '#888', attacker: who, dmg: 0,
-            skillName,
-          });
+        // 跳过回合（魅惑效果）
+        if (skipNext(who)) {
+          const name = who === 'me' ? myCat.name : opponent.name;
+          events.push({ round: r, text: `${name} 被魅惑，跳过回合！`, color: '#CE93D8', attacker: who, dmg: 0, skillName: '魅惑' });
+          setSkip(who, false);
           continue;
         }
 
-        let dmg = Math.round(atk * (skillPower / 70) * (1 - defenderDef / (defenderDef + 200)));
+        const attacker = who === 'me' ? myCat : opponent;
+        const defender = who === 'me' ? opponent : myCat;
+        const defName = who === 'me' ? opponent.name : myCat.name;
+
+        const atk = attacker.baseAtk || 50;
+        const defenderDef = who === 'me' ? (opponent.baseDef || 40) : (myCat.baseDef || 40);
+        const attackerName = attacker.name;
+        const mods = getMods(who);
+        const oppModsData = getMods(who === 'me' ? 'opp' : 'me');
+
+        const skill = pickSkill(attacker);
+        const skillType = skill ? skill.type : 'attack';
+        const skillName = skill ? skill.name : '普通攻击';
+        const skillPower = skill ? skill.power : 50;
+        const skillAcc = skill ? skill.accuracy : 1.0;
+
+        // === 防御技 / 控制技（对自己或对手的属性修正）===
+        if (skill && skillType === 'defense') {
+          if (skill.id === 'curl_up') {
+            setMods(who, { atkMul: mods.atkMul, defMul: mods.defMul + 0.4, spdMul: mods.spdMul, turns: Math.max(mods.turns, 1) });
+            events.push({ round: r, text: `${attackerName} 使用 ${skillName}，防御+40%！`, color: '#42A5F5', attacker: who, dmg: 0, skillName });
+          } else if (skill.id === 'catnap') {
+            const heal = Math.round(myMaxHp * (skill.healRatio || 0.15));
+            if (who === 'me') myHp = Math.min(myMaxHp, myHp + heal);
+            else oppHp = Math.min(oppMaxHp, oppHp + heal);
+            events.push({ round: r, text: `${attackerName} 使用 ${skillName}，回复 ${heal} HP！`, color: '#4CAF50', attacker: who, dmg: 0, skillName, myHpAfter: myHp, oppHpAfter: oppHp });
+          } else if (skill.id === 'fur_shield') {
+            setMods(who, { atkMul: mods.atkMul, defMul: mods.defMul + 0.3, spdMul: mods.spdMul, turns: Math.max(mods.turns, 2) });
+            events.push({ round: r, text: `${attackerName} 使用 ${skillName}，防御+30%(2回合)！`, color: '#42A5F5', attacker: who, dmg: 0, skillName });
+          } else if (skill.id === 'nine_lives') {
+            if (who === 'me') myNineLives = true; else oppNineLives = true;
+            events.push({ round: r, text: `${attackerName} 使用 ${skillName}，获得一次免死！`, color: '#FFD700', attacker: who, dmg: 0, skillName });
+          }
+          continue;
+        }
+
+        if (skill && skillType === 'control') {
+          if (skill.id === 'glare') {
+            const target = who === 'me' ? 'opp' : 'me';
+            const tMods = getMods(target);
+            setMods(target, { atkMul: tMods.atkMul - 0.25, defMul: tMods.defMul, spdMul: tMods.spdMul, turns: Math.max(tMods.turns, 1) });
+            events.push({ round: r, text: `${attackerName} 使用 ${skillName}，${defName} ATK-25%！`, color: '#AB47BC', attacker: who, dmg: 0, skillName });
+          } else if (skill.id === 'hiss') {
+            const target = who === 'me' ? 'opp' : 'me';
+            const tMods = getMods(target);
+            setMods(target, { atkMul: tMods.atkMul, defMul: tMods.defMul, spdMul: tMods.spdMul - 0.3, turns: Math.max(tMods.turns, 2) });
+            events.push({ round: r, text: `${attackerName} 使用 ${skillName}，${defName} SPD-30%(2回合)！`, color: '#AB47BC', attacker: who, dmg: 0, skillName });
+          } else if (skill.id === 'charm') {
+            const target = who === 'me' ? 'opp' : 'me';
+            setSkip(target, true);
+            events.push({ round: r, text: `${attackerName} 使用 ${skillName}，${defName} 下回合跳过！`, color: '#CE93D8', attacker: who, dmg: 0, skillName });
+          } else if (skill.id === 'hypnosis') {
+            const target = who === 'me' ? 'opp' : 'me';
+            const tMods = getMods(target);
+            setMods(target, { atkMul: tMods.atkMul - 0.4, defMul: tMods.defMul - 0.2, spdMul: tMods.spdMul, turns: Math.max(tMods.turns, 2) });
+            events.push({ round: r, text: `${attackerName} 使用 ${skillName}，${defName} ATK-40% DEF-20%！`, color: '#AB47BC', attacker: who, dmg: 0, skillName });
+          }
+          continue;
+        }
+
+        // === 攻击技 ===
+        if (Math.random() > skillAcc) {
+          events.push({ round: r, text: `${attackerName} 的 ${skillName} 未命中！`, color: '#888', attacker: who, dmg: 0, skillName });
+          continue;
+        }
+
+        const effAtk = atk * mods.atkMul;
+        const effDef = defenderDef * oppModsData.defMul;
+        let dmg = Math.round(effAtk * (skillPower / 70) * (1 - effDef / (effDef + 200)));
         dmg = Math.max(1, Math.round(dmg * (0.9 + Math.random() * 0.2)));
 
         if (Math.random() < dodgeChance) {
           events.push({ round: r, text: `${attackerName} 的 ${skillName} 被闪避！`, color: '#888', attacker: who, dmg: 0, skillName });
         } else {
-          const crit = Math.random() < ((attacker.baseCrit || 0.05) + (skill && skill.id === 'shadow_strike' ? 0.2 : 0) + (skill && skill.id === 'sneak_attack' ? 0.1 : 0));
-          const finalDmg = crit ? Math.round(dmg * 1.6) : dmg;
+          const critBonus = (skill && skill.id === 'shadow_strike' ? 0.2 : 0) + (skill && skill.id === 'sneak_attack' ? 0.1 : 0);
+          const crit = Math.random() < ((attacker.baseCrit || 0.05) + critBonus);
+          let finalDmg = crit ? Math.round(dmg * 1.6) : dmg;
           if (who === 'me') {
             oppHp = Math.max(0, oppHp - finalDmg);
           } else {
             myHp = Math.max(0, myHp - finalDmg);
           }
+
+          // 九命护体：免疫致命伤害
+          if (who === 'me' && oppHp <= 0 && hasNineLives('opp')) {
+            useNineLives('opp');
+            finalDmg = 0;
+            events.push({ round: r, text: `${defName} 触发九命护体，免疫致命伤害！`, color: '#FFD700', attacker: who, dmg: 0, skillName, myHpAfter: myHp, oppHpAfter: oppHp });
+            continue;
+          } else if (who === 'opp' && myHp <= 0 && hasNineLives('me')) {
+            useNineLives('me');
+            finalDmg = 0;
+            events.push({ round: r, text: `${defName} 触发九命护体，免疫致命伤害！`, color: '#FFD700', attacker: who, dmg: 0, skillName, myHpAfter: myHp, oppHpAfter: oppHp });
+            continue;
+          }
+
           events.push({
             round: r,
             text: `${attackerName} 使用 ${skillName} → ${finalDmg}${crit ? ' 暴击!' : ''}`,
@@ -178,7 +266,7 @@ Page({
       const oppHpPct = Math.round(curOppHp / oppMaxHp * 100);
 
       this.setData({
-        activeActor: e.attacker === 'me' ? (this.data.myCat && this.data.myCat._id) : (this.data.opponent && this.data.opponent.id),
+        activeActor: e.attacker === 'me' ? (this.data.myCat && this.data.myCat._id) : (this.data.opponent && (this.data.opponent._id || this.data.opponent.id)),
         currentRound: e.round,
         myHp: curMyHp, oppHp: curOppHp,
         myHpPct, oppHpPct,
