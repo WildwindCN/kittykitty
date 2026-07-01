@@ -2,7 +2,18 @@ const api = require('../../utils/api');
 const generator = require('../../utils/generator');
 const sha256 = require('../../utils/sha256');
 
-function randomSkillPower() { return 40 + Math.floor(Math.random() * 60); }
+function pickSkill(cat) {
+  const skills = cat.battleSkills;
+  if (!skills || skills.length === 0) return null;
+  // 加权随机：高威力技能概率更低
+  const totalWeight = skills.reduce((s, sk) => s + (100 - (sk.power || 0)), 0) || skills.length;
+  let roll = Math.random() * totalWeight;
+  for (const sk of skills) {
+    roll -= (100 - (sk.power || 0));
+    if (roll <= 0) return sk;
+  }
+  return skills[skills.length - 1];
+}
 
 Page({
   data: {
@@ -79,13 +90,28 @@ Page({
         const attackerName = attacker.name;
         const defenderName = who === 'me' ? opponent.name : myCat.name;
 
-        let dmg = Math.round(atk * (randomSkillPower() / 100) * (1 - defenderDef / (defenderDef + 200)));
+        // 选择技能
+        const skill = pickSkill(attacker);
+        const skillPower = skill ? skill.power : 50;
+        const skillName = skill ? skill.name : '普通攻击';
+        let skillAcc = skill ? skill.accuracy : 1.0;
+
+        // 命中判定
+        if (Math.random() > skillAcc) {
+          events.push({
+            round: r, text: `${attackerName} 的 ${skillName} 未命中！`, color: '#888', attacker: who, dmg: 0,
+            skillName,
+          });
+          continue;
+        }
+
+        let dmg = Math.round(atk * (skillPower / 70) * (1 - defenderDef / (defenderDef + 200)));
         dmg = Math.max(1, Math.round(dmg * (0.9 + Math.random() * 0.2)));
 
         if (Math.random() < dodgeChance) {
-          events.push({ round: r, text: `${attackerName} 的攻击被闪避！`, color: '#888', attacker: who, dmg: 0 });
+          events.push({ round: r, text: `${attackerName} 的 ${skillName} 被闪避！`, color: '#888', attacker: who, dmg: 0, skillName });
         } else {
-          const crit = Math.random() < ((attacker.baseCrit || 0.05));
+          const crit = Math.random() < ((attacker.baseCrit || 0.05) + (skill && skill.id === 'shadow_strike' ? 0.2 : 0) + (skill && skill.id === 'sneak_attack' ? 0.1 : 0));
           const finalDmg = crit ? Math.round(dmg * 1.6) : dmg;
           if (who === 'me') {
             oppHp = Math.max(0, oppHp - finalDmg);
@@ -93,9 +119,11 @@ Page({
             myHp = Math.max(0, myHp - finalDmg);
           }
           events.push({
-            round: r, text: `${attackerName} 攻击 → ${finalDmg}${crit ? ' 暴击!' : ''}`,
+            round: r,
+            text: `${attackerName} 使用 ${skillName} → ${finalDmg}${crit ? ' 暴击!' : ''}`,
             color: crit ? '#FFD700' : (who === 'me' ? '#FFA726' : '#FF5252'),
             attacker: who, dmg: finalDmg,
+            skillName,
             myHpAfter: myHp, oppHpAfter: oppHp,
           });
         }

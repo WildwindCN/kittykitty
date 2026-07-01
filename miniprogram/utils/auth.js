@@ -5,15 +5,18 @@ const app = getApp();
 module.exports = {
   async login(phone, code) {
     const res = await api.login(phone, code);
-    if (res.code === 200 && res.data) {
-      app.globalData.token = res.data.token;
-      app.globalData.userInfo = res.data.user;
-      wx.setStorageSync('auth_token', res.data.token);
-      wx.setStorageSync('refresh_token', res.data.refreshToken);
-      wx.setStorageSync('user', res.data.user);
-      return { ok: true, user: res.data.user };
-    }
-    return { ok: false, error: res.message };
+    return handleAuthResponse(res);
+  },
+
+  async wechatLogin() {
+    // 获取微信登录 code
+    const { code } = await new Promise((resolve, reject) => {
+      wx.login({ success: resolve, fail: reject });
+    });
+    if (!code) return { ok: false, error: '微信登录失败' };
+
+    const res = await api.wechatLogin(code);
+    return handleAuthResponse(res);
   },
 
   async sendSms(phone) {
@@ -37,3 +40,15 @@ module.exports = {
     return app.globalData.userInfo || wx.getStorageSync('user');
   },
 };
+
+function handleAuthResponse(res) {
+  if (res.code === 200 && res.data) {
+    app.globalData.token = res.data.token;
+    app.globalData.userInfo = res.data.user;
+    wx.setStorageSync('auth_token', res.data.token);
+    wx.setStorageSync('refresh_token', res.data.refreshToken);
+    wx.setStorageSync('user', res.data.user);
+    return { ok: true, user: res.data.user };
+  }
+  return { ok: false, error: res.message };
+}

@@ -124,6 +124,7 @@ module.exports = {
   // Auth
   sendSms(phone) { return request('auth', { action: 'send-sms', phone }, false); },
   login(phone, code) { return request('auth', { action: 'login', phone, code }, false); },
+  wechatLogin(wxCode) { return request('auth', { action: 'wechat-login', code: wxCode }, false); },
   getProfile() { return request('auth', { action: 'profile' }); },
   refreshToken(refreshToken) { return request('auth', { action: 'refresh-token', refreshToken }, false); },
 

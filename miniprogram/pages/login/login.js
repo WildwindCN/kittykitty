@@ -7,6 +7,7 @@ Page({
     countdown: 0,
     sending: false,
     loading: false,
+    wechatLoading: false,
     error: '',
   },
 
@@ -63,6 +64,17 @@ Page({
       wx.switchTab({ url: '/pages/explore/explore' });
     } else {
       this.setData({ error: result.error || '登录失败' });
+    }
+  },
+
+  async doWechatLogin() {
+    this.setData({ wechatLoading: true, error: '' });
+    const result = await auth.wechatLogin();
+    this.setData({ wechatLoading: false });
+    if (result.ok) {
+      wx.switchTab({ url: '/pages/explore/explore' });
+    } else {
+      this.setData({ error: result.error || '微信登录失败' });
     }
   },
 });

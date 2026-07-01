@@ -9,7 +9,7 @@ if (!JWT_SECRET) throw new Error('[FATAL] JWT_SECRET 未在环境变量中配置
 
 const CAPTURE_ALLOWED_FIELDS = [
   'name', 'rarity', 'type',
-  'baseHp', 'baseAtk', 'baseDef', 'baseSpd', 'baseCrit',
+  'baseHp', 'baseAtk', 'baseDef', 'baseSpd', 'baseCrit', 'cp',
   'battleSkills', 'lifeSkills', 'imageUrl', 'cardImageUrl',
   'captureLocation', 'catFaceId', 'featureVector',
 ];

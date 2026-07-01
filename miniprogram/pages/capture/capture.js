@@ -85,7 +85,8 @@ Page({
       const catData = {
         name: cat.name, rarity: cat.rarity, type: cat.type,
         baseHp: cat.baseHp, baseAtk: cat.baseAtk, baseDef: cat.baseDef, baseSpd: cat.baseSpd, baseCrit: cat.baseCrit,
-        cp: cat.cp, imageUrl: imageUrl, battleSkills: [], lifeSkills: [],
+        cp: cat.cp, imageUrl: imageUrl,
+        battleSkills: cat.battleSkills, lifeSkills: cat.lifeSkills,
         captureLocation: { latitude: lat, longitude: lng },
         level: 1, exp: 0,
       };
