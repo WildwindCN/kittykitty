@@ -1,0 +1,10 @@
+{
+  "name": "kittykitty-battle",
+  "version": "1.0.0",
+  "description": "对战记录与验证云函数",
+  "main": "index.js",
+  "dependencies": {
+    "@cloudbase/node-sdk": "^2.0.0",
+    "jsonwebtoken": "^9.0.0"
+  }
+}

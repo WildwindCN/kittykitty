@@ -1,0 +1,62 @@
+# Flutter
+.dart_tool/
+build/
+*.iml
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# iOS
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Runner/GeneratedPluginRegistrant.*
+
+# Android
+android/.gradle/
+android/app/build/
+android/local.properties
+*.jks
+*.keystore
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+
+# Python venv
+venv/
+.venv/
+
+# Cloud Functions
+cloudfunctions/*/node_modules/
+
+# Model files (>40MB)
+server/dinov2_model/
+server/dinov2_small_fp16.onnx
+
+# Test artifacts
+/tmp/
+test_cat_upload.jpg
+
+# Claude
+.claude/
+
+# Environment
+.env
+.env.*
+tmp_*
+*.json
+tmp_login.json
+tmp_token.txt
+test_cat_upload.jpg

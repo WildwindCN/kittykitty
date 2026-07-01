@@ -1,0 +1,10 @@
+{
+  "name": "kittykitty-recognition",
+  "version": "1.0.0",
+  "description": "猫脸识别云函数 - 特征向量匹配",
+  "main": "index.js",
+  "dependencies": {
+    "@cloudbase/node-sdk": "^2.0.0",
+    "jsonwebtoken": "^9.0.0"
+  }
+}

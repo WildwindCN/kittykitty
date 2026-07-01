@@ -1,0 +1,10 @@
+{
+  "name": "kittykitty-auth",
+  "version": "1.0.0",
+  "description": "用户认证云函数 - 短信验证码发送与登录",
+  "main": "index.js",
+  "dependencies": {
+    "@cloudbase/node-sdk": "^2.0.0",
+    "jsonwebtoken": "^9.0.0"
+  }
+}

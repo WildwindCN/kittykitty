@@ -1,0 +1,10 @@
+{
+  "name": "kittykitty-cats",
+  "version": "1.0.0",
+  "description": "猫咪 CRUD + 地理查询云函数",
+  "main": "index.js",
+  "dependencies": {
+    "@cloudbase/node-sdk": "^2.0.0",
+    "jsonwebtoken": "^9.0.0"
+  }
+}

@@ -1,0 +1,62 @@
+name: kittykitty
+description: 猫咪收集 AR 手游 — 拍摄真实猫咪，自动抠图，生成收藏卡片，地图探索，自动对战。
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.6.0
+  flutter: '>=3.27.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # 状态管理
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+  # 路由
+  go_router: ^14.8.1
+  # HTTP
+  dio: ^5.7.0
+  # 序列化
+  json_annotation: ^4.9.0
+  freezed_annotation: ^2.4.4
+  # 本地数据库
+  drift: ^2.24.0
+  sqlite3_flutter_libs: ^0.5.30
+  # 安全存储 (Token)
+  flutter_secure_storage: ^9.2.4
+  # 相机
+  camera: ^0.11.1
+  # 高德地图
+  gmm_amap_flutter_map: ^3.1.4
+  # 定位
+  geolocator: ^13.0.2
+  # 微信登录
+  fluwx: ^4.6.3
+  # 推送
+  jpush_flutter: ^2.5.2
+  # 图片缓存
+  cached_network_image: ^3.4.1
+  # 图片处理
+  image: ^4.5.2
+  # UUID 生成
+  uuid: ^4.5.1
+  # 数学工具
+  collection: ^1.19.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.14
+  json_serializable: ^6.9.4
+  freezed: ^2.5.8
+  drift_dev: ^2.24.0
+  riverpod_generator: ^2.6.3
+  mocktail: ^1.0.4
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/fonts/

@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "cloudbase": {
+      "command": "npx",
+      "args": [
+        "@cloudbase/cloudbase-mcp@2.23.6"
+      ],
+      "env": {
+        "INTEGRATION_IDE": "Claude"
+      }
+    }
+  }
+}

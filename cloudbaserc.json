@@ -1,0 +1,48 @@
+{
+  "version": "2.0",
+  "envId": "kittykitty-d0go1pcqbe5e83de6",
+  "region": "ap-shanghai",
+  "functions": [
+    {
+      "name": "auth",
+      "runtime": "Nodejs18.15",
+      "timeout": 10,
+      "handler": "index.main"
+    },
+    {
+      "name": "cats",
+      "runtime": "Nodejs18.15",
+      "timeout": 10,
+      "handler": "index.main"
+    },
+    {
+      "name": "recognition",
+      "runtime": "Nodejs18.15",
+      "timeout": 20,
+      "handler": "index.main"
+    }
+  ],
+  "framework": {
+    "name": "kittykitty",
+    "plugins": {
+      "client": {
+        "use": "@cloudbase/framework-plugin-website",
+        "inputs": {
+          "outputPath": "./build/web",
+          "cloudPath": "/kittykitty"
+        }
+      },
+      "server": {
+        "use": "@cloudbase/framework-plugin-function",
+        "inputs": {
+          "functionRootPath": "./cloudfunctions",
+          "functions": [
+            { "name": "auth", "timeout": 10 },
+            { "name": "cats", "timeout": 10 },
+            { "name": "recognition", "timeout": 20 }
+          ]
+        }
+      }
+    }
+  }
+}
