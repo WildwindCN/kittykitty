@@ -11,3 +11,10 @@
 .processing-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center; }
 .processing-content { width:500rpx; text-align:center; }
 .processing-step { font-size:30rpx; color:#fff; margin-bottom:30rpx; display:block; }
+.processing-cancel { margin-top:40rpx; background:rgba(255,255,255,0.1); color:rgba(255,255,255,0.6); border:none; font-size:26rpx; padding:12rpx 40rpx; border-radius:8rpx; }
+
+.error-full { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:#000; }
+.error-icon { font-size:100rpx; margin-bottom:20rpx; }
+.error-msg { font-size:28rpx; color:rgba(255,255,255,0.6); }
+
+.error-toast { position:absolute; top:100rpx; left:50%; transform:translateX(-50%); background:rgba(244,67,54,0.9); color:#fff; padding:16rpx 32rpx; border-radius:12rpx; font-size:26rpx; }

@@ -23,9 +23,13 @@
   </view>
 
   <view class="menu-list">
-    <view class="menu-item" wx:if="{{cats.length > 0}}">
+    <view class="menu-item" wx:if="{{strongestCat}}">
       <text>最强猫咪</text>
-      <text class="rarity-{{cats[0].rarity}}">CP {{cats[0].cp}} · {{cats[0].name}}</text>
+      <text class="rarity-{{strongestCat.rarity}}">CP {{strongestCat.cp}} · {{strongestCat.name}}</text>
+    </view>
+    <view class="menu-item" wx:else>
+      <text>最强猫咪</text>
+      <text class="rarity-common">暂无</text>
     </view>
     <button class="menu-item logout-btn" bindtap="logout">退出登录</button>
   </view>

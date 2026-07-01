@@ -1,0 +1,58 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/explore/explore",
+    "pages/capture/capture",
+    "pages/collection/collection",
+    "pages/profile/profile",
+    "pages/login/login",
+    "pages/battle/battle",
+    "pages/card/card"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#0F0F23",
+    "navigationBarTitleText": "KittyKitty",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#0F0F23",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#888888",
+    "selectedColor": "#E94560",
+    "backgroundColor": "#1A1A2E",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/explore/explore",
+        "iconPath": "images/tab_explore.png",
+        "selectedIconPath": "images/tab_explore_active.png",
+        "text": "探索"
+      },
+      {
+        "pagePath": "pages/capture/capture",
+        "iconPath": "images/tab_capture.png",
+        "selectedIconPath": "images/tab_capture_active.png",
+        "text": "拍摄"
+      },
+      {
+        "pagePath": "pages/collection/collection",
+        "iconPath": "images/tab_collection.png",
+        "selectedIconPath": "images/tab_collection_active.png",
+        "text": "图鉴"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "iconPath": "images/tab_profile.png",
+        "selectedIconPath": "images/tab_profile_active.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "permission": {
+    "scope.userLocation": { "desc": "用于发现附近的猫咪" }
+  },
+  "requiredPrivateInfos": ["getLocation"],
+  "__usePrivacyCheck__": true,
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

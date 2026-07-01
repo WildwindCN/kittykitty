@@ -1,4 +1,5 @@
 const api = require('../../utils/api');
+const image = require('../../utils/image');
 
 Page({
   data: { cats: [], loading: true, error: '' },
@@ -8,20 +9,32 @@ Page({
   async loadNearby() {
     this.setData({ loading: true, error: '' });
     try {
-      // 获取 GPS 位置
       const pos = await new Promise((resolve, reject) => {
         wx.getLocation({ type: 'gcj02', success: resolve, fail: reject });
       }).catch(() => ({ latitude: 31.23, longitude: 121.47 }));
 
       const res = await api.getNearbyCats(pos.latitude, pos.longitude, 10000);
-      if (res.code === 200) {
-        this.setData({ cats: res.data || [], loading: false });
+      if (res.code === 200 && res.data) {
+        const cats = res.data || [];
+        // 批量转换图片 fileID → 临时 URL
+        const fileIDs = cats.map(c => c.imageUrl).filter(Boolean);
+        const urlMap = fileIDs.length > 0 ? await image.getTempUrls(fileIDs) : {};
+        const catsWithUrls = cats.map(c => ({
+          ...c,
+          imageUrl: urlMap[c.imageUrl] || c.imageUrl,
+        }));
+        this.setData({ cats: catsWithUrls, loading: false });
       } else {
         this.setData({ error: res.message || '加载失败', loading: false });
       }
     } catch (e) {
       this.setData({ error: e.errMsg || '网络错误', loading: false });
     }
+  },
+
+  // 下拉刷新
+  onPullDownRefresh() {
+    this.loadNearby().then(() => wx.stopPullDownRefresh());
   },
 
   rarityLabel(r) {

@@ -56,7 +56,6 @@ test_cat_upload.jpg
 .env
 .env.*
 tmp_*
-*.json
 tmp_login.json
 tmp_token.txt
 test_cat_upload.jpg

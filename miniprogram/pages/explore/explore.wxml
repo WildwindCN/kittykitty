@@ -26,7 +26,7 @@
       <text class="empty-sub">出门探索发现更多猫咪吧！</text>
     </view>
 
-    <view class="cat-card card {{'bg-rarity-' + item.rarity}}" wx:for="{{cats}}" wx:key="id" bindtap="goDetail" data-id="{{item.id || item._id}}">
+    <view class="cat-card card {{'bg-rarity-' + item.rarity}}" wx:for="{{cats}}" wx:key="_id" bindtap="goDetail" data-id="{{item._id || item.id}}">
       <image class="cat-avatar" src="{{item.imageUrl}}" mode="aspectFill" wx:if="{{item.imageUrl}}"/>
       <view class="cat-avatar placeholder" wx:else>🐱</view>
       <view class="cat-info">

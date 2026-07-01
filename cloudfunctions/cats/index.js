@@ -48,8 +48,12 @@ function validateCaptureData(catData) {
   if (catData.name !== undefined && (catData.name.length < 1 || catData.name.length > 50)) {
     return 'name 长度需在1-50字符之间';
   }
-  if (catData.imageUrl !== undefined && !catData.imageUrl.startsWith('https://')) {
-    return 'imageUrl 必须使用 HTTPS';
+  if (catData.imageUrl !== undefined && typeof catData.imageUrl === 'string') {
+    const url = catData.imageUrl;
+    // 允许 HTTPS 链接和 CloudBase 内部 cloud:// fileID
+    if (!url.startsWith('https://') && !url.startsWith('cloud://')) {
+      return 'imageUrl 必须使用 HTTPS 或 cloud:// 链接';
+    }
   }
   return null;
 }

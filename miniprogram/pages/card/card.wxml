@@ -8,7 +8,7 @@
     </view>
 
     <!-- 图片 -->
-    <image class="card-image" src="{{cat.imageUrl || cat.cardImageUrl}}" mode="aspectFill" wx:if="{{imageSrc}}"/>
+    <image class="card-image" src="{{imageSrc}}" mode="aspectFill" wx:if="{{imageSrc}}"/>
     <view class="card-image placeholder" wx:else>🐱</view>
 
     <!-- CP -->
@@ -31,7 +31,7 @@
     <!-- 技能 -->
     <view class="skills" wx:if="{{cat.battleSkills && cat.battleSkills.length > 0}}">
       <text class="section-title">战斗技能</text>
-      <view class="skill-item" wx:for="{{cat.battleSkills}}" wx:key="id">
+      <view class="skill-item" wx:for="{{cat.battleSkills}}" wx:key="index">
         <text class="skill-name">{{item.name}}</text>
         <text class="skill-power">威力 {{item.power}}</text>
       </view>
@@ -39,7 +39,7 @@
 
     <view class="life-skills" wx:if="{{cat.lifeSkills && cat.lifeSkills.length > 0}}">
       <text class="section-title">生活技能</text>
-      <text class="skill-name" wx:for="{{cat.lifeSkills}}" wx:key="id">{{item.name}}</text>
+      <text class="skill-name" wx:for="{{cat.lifeSkills}}" wx:key="index">{{item.name}}</text>
     </view>
 
     <!-- 操作 -->

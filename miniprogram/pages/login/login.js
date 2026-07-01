@@ -10,6 +10,15 @@ Page({
     error: '',
   },
 
+  _timer: null,
+
+  onUnload() {
+    if (this._timer) {
+      clearTimeout(this._timer);
+      this._timer = null;
+    }
+  },
+
   onPhoneInput(e) { this.setData({ phone: e.detail.value }); },
   onCodeInput(e) { this.setData({ code: e.detail.value }); },
 
@@ -35,7 +44,7 @@ Page({
 
   _tick() {
     if (this.data.countdown <= 0) return;
-    setTimeout(() => {
+    this._timer = setTimeout(() => {
       this.setData({ countdown: this.data.countdown - 1 });
       this._tick();
     }, 1000);

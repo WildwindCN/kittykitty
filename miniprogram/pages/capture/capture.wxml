@@ -1,8 +1,13 @@
 <!-- 拍摄页 — 相机拍照 + 猫脸识别 -->
 <view class="capture-page">
+  <!-- 权限拒绝 -->
+  <view class="error-full" wx:if="{{!cameraAuthorized}}">
+    <text class="error-icon">📷</text>
+    <text class="error-msg">{{error}}</text>
+  </view>
+
   <!-- 相机预览 -->
-  <camera device-position="back" flash="auto" class="camera-preview">
-    <!-- AR 瞄准叠加层 -->
+  <camera device-position="back" flash="auto" class="camera-preview" binderror="onError" wx:if="{{cameraAuthorized}}">
     <cover-view class="ar-overlay">
       <cover-view class="ar-frame"></cover-view>
       <cover-view class="ar-text">将猫咪放入框内</cover-view>
@@ -10,8 +15,8 @@
   </camera>
 
   <!-- 底部控制 -->
-  <view class="controls">
-    <button class="capture-btn" bindtap="takePhoto" disabled="{{capturing}}">
+  <view class="controls" wx:if="{{cameraAuthorized}}">
+    <button class="capture-btn" bindtap="takePhoto" disabled="{{capturing || processing}}">
       <view class="capture-btn-inner"></view>
     </button>
   </view>
@@ -21,6 +26,12 @@
     <view class="processing-content">
       <text class="processing-step">{{stepText}}</text>
       <progress percent="{{progress}}" stroke-width="4" activeColor="#E94560" backgroundColor="rgba(255,255,255,0.1)"/>
+      <button class="processing-cancel" bindtap="cancelProcessing">取消</button>
     </view>
+  </view>
+
+  <!-- 错误提示 -->
+  <view class="error-toast" wx:if="{{error && !processing}}">
+    <text>{{error}}</text>
   </view>
 </view>

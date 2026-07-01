@@ -1,4 +1,5 @@
 const api = require('../../utils/api');
+const image = require('../../utils/image');
 
 Page({
   data: { cat: null, imageSrc: '', cp: 0, stats: [] },
@@ -9,31 +10,44 @@ Page({
 
   async loadCat(id) {
     try {
-      // 先从本地图鉴缓存找
-      const res = await api.getMyCats();
-      if (res.code === 200) {
-        const cat = (res.data || []).find(c => c._id === id || c.id === id);
-        if (cat) {
-          this.setData({
-            cat,
-            cp: cat.cp || this.calcCp(cat),
-            stats: this.buildStats(cat),
-          });
-          // 加载图片
-          if (cat.imageUrl) {
-            this.loadImage(cat.imageUrl);
+      // 优先精确查询（自己的猫）
+      let cat = null;
+      try {
+        const detailRes = await api.getCatDetail(id);
+        if (detailRes.code === 200 && detailRes.data) {
+          cat = detailRes.data;
+        }
+      } catch (_) {}
+
+      // 回退：从图鉴列表中查找（可能是其他人拍的猫，从 explore 进入）
+      if (!cat) {
+        const res = await api.getMyCats();
+        if (res.code === 200 && res.data) {
+          cat = (res.data || []).find(c => c._id === id || c.id === id);
+        }
+      }
+
+      if (cat) {
+        this.setData({
+          cat,
+          cp: cat.cp || this.calcCp(cat),
+          stats: this.buildStats(cat),
+        });
+        const rawUrl = cat.cardImageUrl || cat.imageUrl;
+        if (rawUrl) {
+          if (rawUrl.startsWith('cloud://')) {
+            this.loadImage(rawUrl);
+          } else {
+            this.setData({ imageSrc: rawUrl });
           }
         }
       }
     } catch (_) {}
   },
 
-  loadImage(fileID) {
-    wx.cloud.getTempFileURL({ fileList: [fileID] }).then(res => {
-      if (res.fileList[0] && res.fileList[0].tempFileURL) {
-        this.setData({ imageSrc: res.fileList[0].tempFileURL });
-      }
-    }).catch(() => {});
+  async loadImage(fileID) {
+    const url = await image.getTempUrl(fileID);
+    if (url) this.setData({ imageSrc: url });
   },
 
   calcCp(cat) {
@@ -44,11 +58,11 @@ Page({
 
   buildStats(cat) {
     return [
-      { label: 'HP', value: this.scaleStat(cat.baseHp, cat.level), pct: 60, color: '#FF6B6B', suffix: '' },
-      { label: 'ATK', value: this.scaleStat(cat.baseAtk, cat.level), pct: 55, color: '#FFA726', suffix: '' },
-      { label: 'DEF', value: this.scaleStat(cat.baseDef, cat.level), pct: 50, color: '#42A5F5', suffix: '' },
-      { label: 'SPD', value: this.scaleStat(cat.baseSpd, cat.level), pct: 50, color: '#66BB6A', suffix: '' },
-      { label: 'CRIT', value: Math.round((cat.baseCrit || 0.05) * 100), pct: 12, color: '#AB47BC', suffix: '%' },
+      { label: 'HP', value: this.scaleStat(cat.baseHp, cat.level), pct: Math.min(100, Math.round((cat.baseHp || 80) / 180 * 100)), color: '#FF6B6B', suffix: '' },
+      { label: 'ATK', value: this.scaleStat(cat.baseAtk, cat.level), pct: Math.min(100, Math.round((cat.baseAtk || 50) / 140 * 100)), color: '#FFA726', suffix: '' },
+      { label: 'DEF', value: this.scaleStat(cat.baseDef, cat.level), pct: Math.min(100, Math.round((cat.baseDef || 40) / 115 * 100)), color: '#42A5F5', suffix: '' },
+      { label: 'SPD', value: this.scaleStat(cat.baseSpd, cat.level), pct: Math.min(100, Math.round((cat.baseSpd || 50) / 125 * 100)), color: '#66BB6A', suffix: '' },
+      { label: 'CRIT', value: Math.round((cat.baseCrit || 0.05) * 100), pct: Math.min(100, Math.round((cat.baseCrit || 0.05) * 100 / 15 * 100)), color: '#AB47BC', suffix: '%' },
     ];
   },
 
@@ -59,8 +73,18 @@ Page({
   },
 
   startBattle() {
-    if (this.data.cat && this.data.cat._id) {
-      wx.navigateTo({ url: `/pages/battle/battle?id=${this.data.cat._id}` });
+    if (this.data.cat && (this.data.cat._id || this.data.cat.id)) {
+      wx.navigateTo({ url: `/pages/battle/battle?id=${this.data.cat._id || this.data.cat.id}` });
     }
+  },
+
+  // 分享
+  onShareAppMessage() {
+    const cat = this.data.cat;
+    if (!cat) return { title: 'KittyKitty', path: '/pages/index/index' };
+    return {
+      title: `我抓到了 ${cat.name}！`,
+      path: `/pages/card/card?id=${cat._id || cat.id}`,
+    };
   },
 });
